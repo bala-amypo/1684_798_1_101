@@ -1,45 +1,38 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Warehouse;
 import com.example.demo.repository.WarehouseRepository;
 import com.example.demo.service.WarehouseService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private final WarehouseRepository warehouseRepository;
+    private final WarehouseRepository repository;
 
-    @Override
-    public Warehouse createWarehouse(Warehouse warehouse) {
-        if (warehouse.getWarehouseName() == null || warehouse.getWarehouseName().isBlank()) {
-            throw new IllegalArgumentException("Warehouse name must not be blank");
-        }
-        if (warehouse.getLocation() == null || warehouse.getLocation().isBlank()) {
-            throw new IllegalArgumentException("Warehouse location must not be empty");
-        }
-        warehouseRepository.findByWarehouseName(warehouse.getWarehouseName()).ifPresent(w -> {
-            throw new IllegalArgumentException("Warehouse name already exists");
-        });
-
-        warehouse.setCreatedAt(LocalDateTime.now());
-        return warehouseRepository.save(warehouse);
+    public WarehouseServiceImpl(WarehouseRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Warehouse getWarehouse(Long id) {
-        return warehouseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
+    public Warehouse saveWarehouse(Warehouse warehouse) {
+        return repository.save(warehouse);
     }
 
     @Override
     public List<Warehouse> getAllWarehouses() {
-        return warehouseRepository.findAll();
+        return repository.findAll();
+    }
+
+    @Override
+    public Warehouse getWarehouseById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteWarehouse(Long id) {
+        repository.deleteById(id);
     }
 }
