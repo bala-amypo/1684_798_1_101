@@ -1,4 +1,11 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+import java.util.Set;
+import java.util.HashSet;
+
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -12,8 +19,15 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    // ✅ REQUIRED GETTERS
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public Set<Role> getRoles() { return roles; }
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }
