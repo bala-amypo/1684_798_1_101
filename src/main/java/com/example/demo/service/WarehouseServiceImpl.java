@@ -17,22 +17,18 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public Warehouse saveWarehouse(Warehouse warehouse) {
-        return repository.save(warehouse);
-    }
-
-    @Override
     public List<Warehouse> getAllWarehouses() {
         return repository.findAll();
     }
 
     @Override
-    public Warehouse getWarehouseById(Long id) {
-        return repository.findById(id).orElse(null);
+    public Warehouse getWarehouse(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Warehouse not found"));
     }
 
     @Override
-    public void deleteWarehouse(Long id) {
-        repository.deleteById(id);
+    public Warehouse createWarehouse(Warehouse warehouse) {
+        return repository.save(warehouse);
     }
 }
