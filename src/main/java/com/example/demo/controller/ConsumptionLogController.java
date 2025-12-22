@@ -1,41 +1,16 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ConsumptionLog;
 import com.example.demo.service.ConsumptionLogService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/consumption-logs")
+@RequestMapping("/api/consumption")
 public class ConsumptionLogController {
 
-    private final ConsumptionLogService consumptionLogService;
+    private final ConsumptionLogService service;
 
-    public ConsumptionLogController(ConsumptionLogService consumptionLogService) {
-        this.consumptionLogService = consumptionLogService;
-    }
-
-    @PostMapping
-    public ResponseEntity<ConsumptionLog> createLog(
-            @RequestBody ConsumptionLog log) {
-
-        ConsumptionLog savedLog = consumptionLogService.createLog(log);
-        return ResponseEntity.ok(savedLog);
-    }
-
-    @GetMapping("/stock/{stockRecordId}")
-    public ResponseEntity<List<ConsumptionLog>> getLogsByStockRecord(
-            @PathVariable Long stockRecordId) {
-
-        return ResponseEntity.ok(
-                consumptionLogService.getLogsByStockRecord(stockRecordId)
-        );
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ConsumptionLog> getLog(@PathVariable Long id) {
-        return ResponseEntity.ok(consumptionLogService.getLog(id));
+    public ConsumptionLogController(ConsumptionLogService service) {
+        this.service = service;
     }
 }
