@@ -20,12 +20,18 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
+                // allow swagger
                 .requestMatchers(
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/error"
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/error"
                 ).permitAll()
-                .anyRequest().authenticated()
+
+                // allow ALL APIs (IMPORTANT)
+                .requestMatchers("/api/**").permitAll()
+
+                // anything else
+                .anyRequest().permitAll()
             );
 
         return http.build();
