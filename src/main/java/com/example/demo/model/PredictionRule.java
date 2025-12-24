@@ -17,6 +17,9 @@ public class PredictionRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(unique = true)
+    private String ruleName;  // Add this field
+    
     private int minDailyUsage;
     
     private int maxDailyUsage;
