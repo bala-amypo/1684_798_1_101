@@ -20,7 +20,8 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public int predictStockOutDays(Long stockRecordId) {
         Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
-        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
+        // Use findById instead of findByRuleName
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L); // Default rule ID
         
         if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
             return -1;
@@ -62,7 +63,7 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public boolean isStockCritical(Long stockRecordId) {
         Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
-        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L); // Default rule ID
         
         if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
             return false;
@@ -80,7 +81,7 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public int calculateReorderQuantity(Long stockRecordId) {
         Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
-        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L); // Default rule ID
         
         if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
             return 0;
