@@ -4,10 +4,7 @@ import com.example.demo.model.Warehouse;
 import java.util.List;
 
 public interface WarehouseService {
-
-    List<Warehouse> getAllWarehouses();
-
-    Warehouse getWarehouse(Long id);
-
     Warehouse createWarehouse(Warehouse warehouse);
+    Warehouse getWarehouse(Long id);
+    List<Warehouse> getAllWarehouses();
 }
