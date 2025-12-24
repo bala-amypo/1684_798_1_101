@@ -4,7 +4,8 @@ import com.example.demo.model.StockRecord;
 import java.util.List;
 
 public interface StockRecordService {
-    StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord stockRecord);
-    StockRecord getStockRecord(Long id);
-    List<StockRecord> getRecordsBy_product(Long productId);
+    StockRecord createStockRecord(StockRecord stockRecord);
+    List<StockRecord> getAllStockRecords();
+    StockRecord getStockRecordById(Long id);
+    StockRecord updateStockRecord(Long id, StockRecord stockRecord);
 }
