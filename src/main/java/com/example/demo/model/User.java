@@ -1,11 +1,16 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.Set;
-import java.util.HashSet;
 
 @Entity
-@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -13,21 +18,7 @@ public class User {
     private Long id;
 
     private String email;
-    private String password;
 
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 }
