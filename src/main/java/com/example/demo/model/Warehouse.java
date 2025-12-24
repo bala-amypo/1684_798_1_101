@@ -5,22 +5,27 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "warehouses", uniqueConstraints = @UniqueConstraint(columnNames = "warehouseName"))
-@Data
-@Builder
+@Table(name = "warehouses", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "warehouseName")
+})
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Warehouse {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
+    
+    @Column(unique = true, nullable = false)
     private String warehouseName;
-
+    
     @Column(nullable = false)
     private String location;
-
-    private LocalDateTime createdAt;
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
