@@ -1,42 +1,31 @@
-// package com.example.demo.controller;
+package com.example.demo.controller;
 
-// import com.example.demo.model.Product;
-// import com.example.demo.service.ProductService;
-// import io.swagger.v3.oas.annotations.Operation;
-// import io.swagger.v3.oas.annotations.tags.Tag;
-// import lombok.RequiredArgsConstructor;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.*;
+import com.example.demo.model.Product;
+import com.example.demo.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+import java.util.List;
 
-// import java.util.List;
-
-// @RestController
-// @RequestMapping("/api/products")
-// @RequiredArgsConstructor
-// @Tag(name = "Product Management", description = "APIs for managing products")
-// public class ProductController {
-
-//     private final ProductService productService;
-
-//     @PostMapping
-//     @Operation(summary = "Create a new product")
-//     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-//         Product createdProduct = productService.createProduct(product);
-//         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
-//     }
-
-//     @GetMapping("/{id}")
-//     @Operation(summary = "Get product by ID")
-//     public ResponseEntity<Product> getProduct(@PathVariable Long id) {
-//         Product product = productService.getProduct(id);
-//         return ResponseEntity.ok(product);
-//     }
-
-//     @GetMapping
-//     @Operation(summary = "Get all products")
-//     public ResponseEntity<List<Product>> getAllProducts() {
-//         List<Product> products = productService.getAllProducts();
-//         return ResponseEntity.ok(products);
-//     }
-// }
+@RestController
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
+public class ProductController {
+    private final ProductService productService;
+    
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
+        return ResponseEntity.ok(productService.createProduct(product));
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProduct(id));
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+}
