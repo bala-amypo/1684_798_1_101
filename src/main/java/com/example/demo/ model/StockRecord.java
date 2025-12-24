@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 @Table(name = "stock_records", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
 })
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,16 +26,13 @@ public class StockRecord {
     private Warehouse warehouse;
     
     @Column(nullable = false)
+    @Builder.Default
     private Integer currentQuantity = 0;
     
+    @Builder.Default
     private Integer reorderThreshold = 10;
     
     @Column(nullable = false)
-    private LocalDateTime lastUpdated;
-    
-    @PrePersist
-    @PreUpdate
-    protected void onUpdate() {
-        lastUpdated = LocalDateTime.now();
-    }
+    @Builder.Default
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 }

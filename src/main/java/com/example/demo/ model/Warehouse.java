@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "warehouses")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,10 +21,6 @@ public class Warehouse {
     private String location;
     
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

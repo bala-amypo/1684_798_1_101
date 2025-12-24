@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -43,10 +44,13 @@ public class AuthController {
         return userRepository.findByEmail(email)
                 .map(user -> {
                     if (passwordEncoder.matches(password, user.getPassword())) {
+                        Set<String> roleStrings = user.getRoles().stream()
+                                .map(Enum::name)
+                                .collect(Collectors.toSet());
                         String token = jwtProvider.generateToken(
                             user.getEmail(), 
                             user.getId(), 
-                            Set.copyOf(user.getRoles())
+                            roleStrings
                         );
                         Map<String, String> response = new HashMap<>();
                         response.put("token", token);

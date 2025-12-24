@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "consumption_logs")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,18 +24,12 @@ public class ConsumptionLog {
     private Integer consumedQuantity;
     
     @Column(nullable = false)
-    private LocalDate consumedDate;
+    @Builder.Default
+    private LocalDate consumedDate = LocalDate.now();
     
     private String notes;
     
     @Column(nullable = false, updatable = false)
-    private LocalDateTime loggedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        loggedAt = LocalDateTime.now();
-        if (consumedDate == null) {
-            consumedDate = LocalDate.now();
-        }
-    }
+    @Builder.Default
+    private LocalDateTime loggedAt = LocalDateTime.now();
 }

@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prediction_rules")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,17 +19,16 @@ public class PredictionRule {
     private String ruleName;
     
     @Column(nullable = false)
+    @Builder.Default
     private Integer averageDaysWindow = 7;
     
+    @Builder.Default
     private Integer minDailyUsage = 1;
     
+    @Builder.Default
     private Integer maxDailyUsage = 10;
     
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
