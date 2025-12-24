@@ -25,6 +25,12 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .orElseThrow(() -> new RuntimeException("Warehouse not found with id: " + id));
     }
     
+    // Add this method for tests
+    @Override
+    public Warehouse getWarehouse(long id) {
+        return getWarehouseById((long) id);
+    }
+    
     @Override
     public Warehouse createWarehouse(Warehouse warehouse) {
         return warehouseRepository.save(warehouse);

@@ -22,12 +22,12 @@ public class Warehouse {
     
     private String location;
     
-    // Fix for tests - add proper builder method name
+    // Custom builder method if needed by tests
     public static WarehouseBuilder builder() {
         return new WarehouseBuilder();
     }
     
-    // Builder class
+    // Builder class with proper methods
     public static class WarehouseBuilder {
         private Long id;
         private String name;
@@ -38,7 +38,13 @@ public class Warehouse {
             return this;
         }
         
-        public WarehouseBuilder name(String name) {  // Changed from warehouseName to name
+        public WarehouseBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        // Alias method for tests using warehouseName()
+        public WarehouseBuilder warehouseName(String name) {
             this.name = name;
             return this;
         }
