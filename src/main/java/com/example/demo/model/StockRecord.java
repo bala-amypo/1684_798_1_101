@@ -1,40 +1,41 @@
-// package com.example.demo.model;
+package com.example.demo.model;
 
-// import jakarta.persistence.*;
-// import lombok.*;
-// import java.time.LocalDateTime;
+import lombok.*;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
-// @Entity
-// @Table(name = "stock_records", uniqueConstraints = {
-//     @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
-// })
-// @Getter
-// @Setter
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @Builder
-// public class StockRecord {
+@Entity
+@Table(name = "stock_records", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "warehouse_id"}))
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class StockRecord {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "product_id", nullable = false)
-//     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "warehouse_id", nullable = false)
+    private Warehouse warehouse;
     
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "warehouse_id", nullable = false)
-//     private Warehouse warehouse;
+    @Column(name = "current_quantity", nullable = false)
+    private Integer currentQuantity;
     
-//     @Column(nullable = false)
-//     @Builder.Default
-//     private Integer currentQuantity = 0;
+    @Column(name = "reorder_threshold")
+    private Integer reorderThreshold;
     
-//     @Column(nullable = false)
-//     private Integer reorderThreshold;
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
     
-//     @Column(nullable = false)
-//     @Builder.Default
-//     private LocalDateTime lastUpdated = LocalDateTime.now();
-// }
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdated = LocalDateTime.now();
+    }
+}

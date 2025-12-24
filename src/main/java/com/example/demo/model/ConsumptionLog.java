@@ -1,29 +1,27 @@
-// package com.example.demo.model;
+package com.example.demo.model;
 
-// import jakarta.persistence.*;
-// import lombok.*;
-// import java.time.LocalDate;
+import lombok.*;
+import javax.persistence.*;
+import java.time.LocalDate;
 
-// @Entity
-// @Table(name = "consumption_logs")
-// @Getter
-// @Setter
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @Builder
-// public class ConsumptionLog {
+@Entity
+@Table(name = "consumption_logs")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConsumptionLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "stock_record_id", nullable = false)
+    private StockRecord stockRecord;
     
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "stock_record_id", nullable = false)
-//     private StockRecord stockRecord;
+    @Column(name = "consumed_quantity", nullable = false)
+    private Integer consumedQuantity;
     
-//     @Column(nullable = false)
-//     private Integer consumedQuantity;
-    
-//     @Column(nullable = false)
-//     private LocalDate consumedDate;
-// }
+    @Column(name = "consumed_date", nullable = false)
+    private LocalDate consumedDate;
+}
