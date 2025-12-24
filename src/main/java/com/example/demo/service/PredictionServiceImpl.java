@@ -20,7 +20,7 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public int predictStockOutDays(Long stockRecordId) {
         Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
-        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L); // Assuming rule id 1
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
         
         if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
             return -1;
