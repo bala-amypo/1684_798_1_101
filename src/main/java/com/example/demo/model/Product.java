@@ -20,6 +20,9 @@ public class Product {
     @Column(nullable = false)
     private String name;
     
+    @Column(unique = true)  // Add sku field
+    private String sku;
+    
     private String description;
     
     private String category;
