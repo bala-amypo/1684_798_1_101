@@ -8,5 +8,5 @@ import com.example.demo.model.User;
 public interface UserService {
     User register(UserRegisterDto dto);
     AuthResponse login(AuthRequest request);
-    User getByEmail(String email);
+    User getByEmail(String email); // Make sure this method exists
 }
