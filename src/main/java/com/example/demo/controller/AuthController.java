@@ -1,64 +1,55 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.config.JwtProvider;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists");
-        }
+        User saved = userService.register(user);
         
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User saved = userRepository.save(user);
-        
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("message", "User registered successfully");
-        response.put("userId", saved.getId().toString());
+        response.put("userId", saved.getId());
+        
         return ResponseEntity.ok(response);
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String email = credentials.get("email");
-        String password = credentials.get("password");
+    public ResponseEntity<?> login(@Valid @RequestBody User user) {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+        );
         
-        return userRepository.findByEmail(email)
-                .map(user -> {
-                    if (passwordEncoder.matches(password, user.getPassword())) {
-                        Set<String> roleStrings = user.getRoles().stream()
-                                .map(Enum::name)
-                                .collect(Collectors.toSet());
-                        String token = jwtProvider.generateToken(
-                            user.getEmail(), 
-                            user.getId(), 
-                            roleStrings
-                        );
-                        Map<String, String> response = new HashMap<>();
-                        response.put("token", token);
-                        return ResponseEntity.ok(response);
-                    } else {
-                        return ResponseEntity.status(401).body("Invalid credentials");
-                    }
-                })
-                .orElse(ResponseEntity.status(401).body("User not found"));
+        if (authentication.isAuthenticated()) {
+            String token = jwtProvider.generateToken(user.getEmail());
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("message", "Login successful");
+            
+            return ResponseEntity.ok(response);
+        }
+        
+        return ResponseEntity.badRequest().body("Authentication failed");
     }
 }
