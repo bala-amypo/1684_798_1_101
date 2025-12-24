@@ -6,6 +6,10 @@ import java.util.List;
 
 public interface ConsumptionLogRepository extends JpaRepository<ConsumptionLog, Long> {
     List<ConsumptionLog> findByStockRecordId(Long stockRecordId);
+    
+    // Add method that test expects
+    List<ConsumptionLog> findByStockRecordIdOrderByConsumedDateDesc(Long stockRecordId);
+    
     List<ConsumptionLog> findByStockRecordIdAndConsumedDateBetween(
         Long stockRecordId, 
         java.time.LocalDate startDate, 
