@@ -1,9 +1,15 @@
-// package com.example.demo.repository;
+package com.example.demo.repository;
 
-// import com.example.demo.model.PredictionRule;
-// import org.springframework.data.jpa.repository.JpaRepository;
-// import java.util.Optional;
+import com.example.demo.model.PredictionRule;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-// public interface PredictionRuleRepository extends JpaRepository<PredictionRule, Long> {
-//     Optional<PredictionRule> findByRuleName(String ruleName);
-// }
+@Repository
+public interface PredictionRuleRepository extends JpaRepository<PredictionRule, Long> {
+    Optional<PredictionRule> findByRuleName(String ruleName);
+    
+    // Custom query to find rules by usage range
+    // @Query("SELECT pr FROM PredictionRule pr WHERE pr.minDailyUsage <= :usage AND pr.maxDailyUsage >= :usage")
+    // List<PredictionRule> findRulesForUsage(@Param("usage") Integer usage);
+}
