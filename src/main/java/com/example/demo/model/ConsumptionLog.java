@@ -1,35 +1,28 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "consumption_logs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "consumption_logs")
 public class ConsumptionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "stock_record_id", nullable = false)
+    @JoinColumn(name = "stock_record_id")
     private StockRecord stockRecord;
     
-    @Column(nullable = false)
-    private Integer consumedQuantity;
+    private int consumedQuantity;
     
-    @Column(nullable = false)
-    @Builder.Default
-    private LocalDate consumedDate = LocalDate.now();
-    
-    private String notes;
-    
-    @Column(nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime loggedAt = LocalDateTime.now();
+    private LocalDate consumedDate;
 }
