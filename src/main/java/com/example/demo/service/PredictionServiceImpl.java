@@ -1,77 +1,100 @@
 package com.example.demo.service;
 
-import com.example.demo.model.PredictionRule;
-import com.example.demo.model.ConsumptionLog;
-import com.example.demo.model.StockRecord;
-import com.example.demo.repository.PredictionRuleRepository;
-import com.example.demo.repository.ConsumptionLogRepository;
-import com.example.demo.repository.StockRecordRepository;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class PredictionServiceImpl implements PredictionService {
+    
     private final PredictionRuleRepository predictionRuleRepository;
-    private final ConsumptionLogRepository consumptionLogRepository;
     private final StockRecordRepository stockRecordRepository;
+    private final ConsumptionLogRepository consumptionLogRepository;
     
     @Override
-    @Transactional
-    public PredictionRule createRule(PredictionRule rule) {
-        return predictionRuleRepository.save(rule);
-    }
-    
-    @Override
-    public List<PredictionRule> getAllRules() {
-        return predictionRuleRepository.findAll();
-    }
-    
-    @Override
-    public LocalDate predictRestockDate(Long stockRecordId) {
-        StockRecord stockRecord = stockRecordRepository.findById(stockRecordId)
-                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found with id: " + stockRecordId));
+    public int predictStockOutDays(Long stockRecordId) {
+        Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L); // Assuming rule id 1
         
-        // Get consumption logs for last 30 days
+        if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
+            return -1;
+        }
+        
+        StockRecord stockRecord = stockRecordOpt.get();
+        PredictionRule rule = ruleOpt.get();
+        
+        int minDailyUsage = rule.getMinDailyUsage();
+        int currentQuantity = stockRecord.getCurrentQuantity();
+        
+        if (minDailyUsage <= 0) {
+            return -1;
+        }
+        
+        return currentQuantity / minDailyUsage;
+    }
+    
+    @Override
+    public double calculateAverageDailyConsumption(Long stockRecordId, int days) {
         LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(30);
+        LocalDate startDate = endDate.minusDays(days);
         
         List<ConsumptionLog> logs = consumptionLogRepository
                 .findByStockRecordIdAndConsumedDateBetween(stockRecordId, startDate, endDate);
         
         if (logs.isEmpty()) {
-            // Fallback: use default rule
-            Optional<PredictionRule> defaultRule = predictionRuleRepository.findByRuleName("default");
-            int avgDaily = defaultRule.map(PredictionRule::getMinDailyUsage).orElse(1);
-            int days = stockRecord.getCurrentQuantity() / avgDaily;
-            return LocalDate.now().plusDays(Math.max(1, days));
+            return 0.0;
         }
         
-        // Calculate average daily consumption
-        double totalConsumed = logs.stream()
+        int totalConsumption = logs.stream()
                 .mapToInt(ConsumptionLog::getConsumedQuantity)
                 .sum();
-        long days = logs.stream()
-                .map(ConsumptionLog::getConsumedDate)
-                .distinct()
-                .count();
         
-        double avgDaily = days > 0 ? totalConsumed / days : 1;
+        long actualDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        return (double) totalConsumption / actualDays;
+    }
+    
+    @Override
+    public boolean isStockCritical(Long stockRecordId) {
+        Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
         
-        // Apply prediction rules
-        Optional<PredictionRule> rule = predictionRuleRepository.findTopByOrderByIdDesc();
-        if (rule.isPresent()) {
-            PredictionRule r = rule.get();
-            avgDaily = Math.max(r.getMinDailyUsage(), Math.min(r.getMaxDailyUsage(), avgDaily));
+        if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
+            return false;
         }
         
-        int daysToDepletion = (int) Math.ceil(stockRecord.getCurrentQuantity() / avgDaily);
-        return LocalDate.now().plusDays(Math.max(1, daysToDepletion));
+        StockRecord stockRecord = stockRecordOpt.get();
+        PredictionRule rule = ruleOpt.get();
+        
+        int minDailyUsage = rule.getMinDailyUsage();
+        int currentQuantity = stockRecord.getCurrentQuantity();
+        
+        return currentQuantity <= (minDailyUsage * rule.getLeadTimeDays() + rule.getSafetyStock());
+    }
+    
+    @Override
+    public int calculateReorderQuantity(Long stockRecordId) {
+        Optional<StockRecord> stockRecordOpt = stockRecordRepository.findById(stockRecordId);
+        Optional<PredictionRule> ruleOpt = predictionRuleRepository.findById(1L);
+        
+        if (stockRecordOpt.isEmpty() || ruleOpt.isEmpty()) {
+            return 0;
+        }
+        
+        StockRecord stockRecord = stockRecordOpt.get();
+        PredictionRule rule = ruleOpt.get();
+        
+        int maxDailyUsage = rule.getMaxDailyUsage();
+        int leadTimeDays = rule.getLeadTimeDays();
+        int safetyStock = rule.getSafetyStock();
+        int currentQuantity = stockRecord.getCurrentQuantity();
+        
+        int requiredQuantity = (maxDailyUsage * leadTimeDays) + safetyStock;
+        return Math.max(0, requiredQuantity - currentQuantity);
     }
 }
