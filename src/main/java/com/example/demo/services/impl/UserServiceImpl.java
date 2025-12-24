@@ -6,7 +6,7 @@ import com.example.demo.dto.UserRegisterDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtProvider;
+import com.example.demo.config.JwtProvider; // CHANGED: from .security to .config
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
