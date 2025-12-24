@@ -83,6 +83,16 @@
     <version>7.9.0</version>
     <scope>test</scope>
 </dependency>
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>
 
 <!-- Mockito -->
 <dependency>
