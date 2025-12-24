@@ -6,7 +6,7 @@ import com.example.demo.dto.UserRegisterDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.config.JwtProvider; // CHANGED: from .security to .config
+import com.example.demo.config.JwtProvider;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
             .password(passwordEncoder.encode(dto.getPassword()))
             .createdAt(LocalDateTime.now());
         
-        // Convert string roles to enum roles
         Set<User.Role> roles = dto.getRoles().stream()
             .map(roleStr -> {
                 try {
