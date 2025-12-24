@@ -41,9 +41,5 @@ public class User {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     
-    // Make sure the Role enum is public
-    public enum Role {
-        ROLE_ADMIN,
-        ROLE_USER
-    }
+    // Remove the inner enum since we have standalone Role
 }

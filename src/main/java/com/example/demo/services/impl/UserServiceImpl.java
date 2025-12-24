@@ -1,54 +1,18 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.dto.UserRegisterDto;
-import com.example.demo.exception.ResourceNotFoundException;
+// ... other imports
+import com.example.demo.model.Role;  // Add this import
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.config.JwtProvider;
-import com.example.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
+// ...
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
-
+    
+    // ... other code
+    
     @Override
     public User register(UserRegisterDto dto) {
-        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Name must not be empty");
-        }
-        
-        if (dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password must not be empty");
-        }
-        
-        if (!isValidEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Invalid email format");
-        }
-        
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
+        // ... validation code
         
         User.UserBuilder userBuilder = User.builder()
             .name(dto.getName())
@@ -56,65 +20,25 @@ public class UserServiceImpl implements UserService {
             .password(passwordEncoder.encode(dto.getPassword()))
             .createdAt(LocalDateTime.now());
         
-        Set<User.Role> roles = dto.getRoles().stream()
+        // Convert string roles to Role enum
+        Set<Role> roles = dto.getRoles().stream()
             .map(roleStr -> {
                 try {
-                    return User.Role.valueOf(roleStr.toUpperCase());
+                    return Role.valueOf(roleStr.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    return User.Role.ROLE_USER;
+                    return Role.ROLE_USER;
                 }
             })
             .collect(Collectors.toSet());
         
         if (roles.isEmpty()) {
-            roles.add(User.Role.ROLE_USER);
+            roles.add(Role.ROLE_USER);
         }
         
         User user = userBuilder.roles(roles).build();
         
         return userRepository.save(user);
     }
-
-    @Override
-    public AuthResponse login(AuthRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    request.getEmail(),
-                    request.getPassword()
-                )
-            );
-            
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-            
-            String token = jwtProvider.generateToken(user);
-            
-            Set<String> roleStrings = user.getRoles().stream()
-                .map(Enum::name)
-                .collect(Collectors.toSet());
-            
-            return AuthResponse.builder()
-                .token(token)
-                .userId(user.getId())
-                .email(user.getEmail())
-                .roles(roleStrings)
-                .build();
-        } catch (BadCredentialsException e) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
     
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
-    }
+    // ... rest of the code
 }
