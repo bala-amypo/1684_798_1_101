@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
@@ -39,5 +40,10 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
         // Save consumption log
         consumptionLog.setStockRecord(stockRecord);
         return consumptionLogRepository.save(consumptionLog);
+    }
+    
+    // Additional method if needed
+    public List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId) {
+        return consumptionLogRepository.findByStockRecordId(stockRecordId);
     }
 }
