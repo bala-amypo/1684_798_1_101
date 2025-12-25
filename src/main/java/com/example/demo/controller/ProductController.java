@@ -1,33 +1,36 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Product;
-import com.example.demo.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.ProductRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@Tag(name = "Products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductRepository repository;
 
-    @PostMapping
-    public Product save(@RequestBody Product product) {
-        return productService.save(product);
+    public ProductController(ProductRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping
-    public List<Product> findAll() {
-        return productService.findAll();
+    public List<Product> getAll() {
+        return repository.findAll();
+    }
+
+    @PostMapping
+    public Product create(@RequestBody Product product) {
+        return repository.save(product);
     }
 
     @GetMapping("/{id}")
-    public Product findById(@PathVariable Long id) {
-        return productService.findById(id);
+    public ResponseEntity<Product> getById(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
