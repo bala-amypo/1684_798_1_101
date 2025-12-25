@@ -7,3 +7,4 @@ import java.util.List;
 public interface PredictionService {
     List<PredictionRule> predict(LocalDate date);
 }
+

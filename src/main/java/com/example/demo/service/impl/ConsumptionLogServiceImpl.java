@@ -1,15 +1,22 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.ConsumptionLog;
+import com.example.demo.service.ConsumptionLogService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ConsumptionLogServiceImpl implements ConsumptionLogService {
 
     @Override
-    public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log) {
-        if (log.getConsumedDate() != null &&
-            log.getConsumedDate().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("consumedDate cannot be future");
-        }
+    public ConsumptionLog save(ConsumptionLog log) {
         return log;
     }
 
-    @Override public List<ConsumptionLog> getLogsByStockRecord(Long id) { return List.of(); }
-    @Override public ConsumptionLog getLog(Long id) { return new ConsumptionLog(); }
+    @Override
+    public List<ConsumptionLog> findAll() {
+        return new ArrayList<>();
+    }
 }
