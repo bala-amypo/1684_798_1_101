@@ -1,6 +1,18 @@
 package com.example.demo.model;
 
-public enum Role {
-    ROLE_ADMIN,
-    ROLE_USER
+import lombok.*;
+
+import javax.persistence.*;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
 }
