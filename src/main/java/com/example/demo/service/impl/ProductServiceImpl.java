@@ -3,31 +3,36 @@ package com.example.demo.service.impl;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repo;
+    @Autowired
+    private ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository repo) {
-        this.repo = repo;
+    @Override
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return repo.save(product);
+    public Product findById(Long id) {
+        Optional<Product> optional = productRepository.findById(id);
+        return optional.orElse(null);
     }
 
     @Override
-    public Product getProduct(long id) {
-        return repo.findById(id).orElse(null);
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return repo.findAll();
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
     }
 }
