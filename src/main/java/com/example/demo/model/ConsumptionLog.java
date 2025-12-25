@@ -1,25 +1,12 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDate;
-
-@Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class ConsumptionLog {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private int consumed;
 
-    @ManyToOne
-    private StockRecord stockRecord;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    private Integer consumedQuantity;
-
-    private LocalDate consumedDate;
+    public int getConsumed() { return consumed; }
+    public void setConsumed(int consumed) { this.consumed = consumed; }
 }

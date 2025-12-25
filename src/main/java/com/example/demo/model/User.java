@@ -1,34 +1,12 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDateTime;
-import java.util.Set;
-
-@Entity
-@Table(name = "users")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String username;
 
-    private String name;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Column(unique = true)
-    private String email;
-
-    private String password;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles")
-    private Set<Role> roles;
-
-    private LocalDateTime createdAt;
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 }

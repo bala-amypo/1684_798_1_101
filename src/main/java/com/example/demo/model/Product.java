@@ -1,27 +1,12 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDateTime;
-
-@Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
-    private String productName;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Column(unique = true)
-    private String sku;
-
-    private String category;
-
-    private LocalDateTime createdAt;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }

@@ -5,7 +5,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PredictionService {
-    LocalDate predictRestockDate(Long stockRecordId);
-    List<PredictionRule> getAllRules();
-    PredictionRule createRule(PredictionRule rule);
+    List<PredictionRule> predict(LocalDate date);
 }
