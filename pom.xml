@@ -9,7 +9,7 @@
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <!-- USE A REAL VERSION: Spring Boot 3.2.2 -->
+    <!-- Spring Boot Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -23,10 +23,16 @@
 
     <dependencies>
 
-        <!-- Spring Web -->
+        <!-- Spring Web (includes webmvc) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Explicit Spring Web MVC (fix for Springdoc class not found) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
         </dependency>
 
         <!-- Spring Data JPA -->
@@ -42,8 +48,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Springdoc OpenAPI UI
-             — real published version that works with Spring Boot 3.x -->
+        <!-- Springdoc OpenAPI UI (compatible version) -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
