@@ -1,5 +1,15 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Product;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @Tag(name = "Products")
 public class ProductController {
 
@@ -7,17 +17,17 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public Product create(@RequestBody Product p) {
-        return productService.createProduct(p);
+    public Product save(@RequestBody Product product) {
+        return productService.save(product);
     }
 
     @GetMapping
-    public List<Product> all() {
-        return productService.getAllProducts();
+    public List<Product> findAll() {
+        return productService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Product one(@PathVariable Long id) {
-        return productService.getProduct(id);
+    public Product findById(@PathVariable Long id) {
+        return productService.findById(id);
     }
 }
