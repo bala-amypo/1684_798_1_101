@@ -16,7 +16,6 @@ public class Product {
     private String description;
     private Double price;
 
-    // Constructors
     public Product() {}
 
     public Product(String name, String description, Double price) {

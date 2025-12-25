@@ -21,7 +21,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    // Constructors
     public User() {}
 
     public User(String username, String password, Set<Role> roles) {
