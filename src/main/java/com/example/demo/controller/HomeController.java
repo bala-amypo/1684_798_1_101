@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping("/")  // maps the root URL
-    public String home() {
-        return "Welcome to Smart Inventory!";
+    public ResponseEntity<String> home() {
+        return ResponseEntity.notFound();
     }
 }
