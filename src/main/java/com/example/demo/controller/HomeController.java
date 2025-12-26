@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")  // maps the root URL
     public ResponseEntity<String> home() {
-        return ResponseEntity.notFound();
+        return ResponseEntity.status(404).body("not Found");
     }
 }
