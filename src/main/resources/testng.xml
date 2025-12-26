@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="InventoryTestSuite">
+    <test name="InventoryTests">
+        <classes>
+            <class name="com.example.demo.InventoryApplicationTests"/>
+            <class name="com.example.demo.DemoApplicationTests"/>
+        </classes>
+    </test>
+</suite>
