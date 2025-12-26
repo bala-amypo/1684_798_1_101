@@ -1,22 +1,43 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.model.ConsumptionLog;
-import com.example.demo.service.ConsumptionLogService;
+import com.example.demo.model.StockRecord;
+import com.example.demo.repository.ConsumptionLogRepository;
+import com.example.demo.repository.StockRecordRepository;
+import com.example.demo.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ConsumptionLogServiceImpl implements ConsumptionLogService {
-
+    
+    @Autowired
+    private ConsumptionLogRepository consumptionLogRepository;
+    
+    @Autowired
+    private StockRecordRepository stockRecordRepository;
+    
     @Override
-    public ConsumptionLog save(ConsumptionLog log) {
-        return log;
+    public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog consumptionLog) {
+        if (consumptionLog.getConsumedDate() != null && consumptionLog.getConsumedDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("consumedDate cannot be future");
+        }
+        
+        StockRecord stockRecord = stockRecordRepository.findById(stockRecordId)
+            .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
+        
+        consumptionLog.setStockRecord(stockRecord);
+        if (consumptionLog.getConsumedDate() == null) {
+            consumptionLog.setConsumedDate(LocalDate.now());
+        }
+        
+        return consumptionLogRepository.save(consumptionLog);
     }
-
+    
     @Override
-    public List<ConsumptionLog> findAll() {
-        return new ArrayList<>();
+    public List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId) {
+        return consumptionLogRepository.findByStockRecordId(stockRecordId);
     }
 }

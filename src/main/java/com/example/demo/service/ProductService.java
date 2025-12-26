@@ -4,12 +4,7 @@ import com.example.demo.model.Product;
 import java.util.List;
 
 public interface ProductService {
-
-    Product save(Product product);
-
-    Product findById(Long id);
-
-    List<Product> findAll();
-
-    void deleteById(Long id);
+    Product createProduct(Product product);
+    Product getProduct(Long id);
+    List<Product> getAllProducts();
 }
