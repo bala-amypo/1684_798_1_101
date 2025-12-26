@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/consumption")
-public class ConsumptionController {
+public class ConsumptionLogController {
 
     @Autowired
     private ConsumptionLogService consumptionLogService;

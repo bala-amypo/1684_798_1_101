@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/stocks")
-public class StockController {
+public class StockRecordController {
 
     @Autowired
     private StockRecordService stockRecordService;
